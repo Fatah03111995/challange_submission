@@ -8,6 +8,7 @@ environment:
 
 dependencies:
   google_fonts: ^6.2.1
+  cupertino_icons: ^1.0.8
   flutter_screenutil: ^5.9.3
   bloc: ^8.1.4
   flutter_bloc: ^8.1.6
