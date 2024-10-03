@@ -32,15 +32,15 @@ class GridSquare extends StatelessWidget {
                 .read<QuizBloc>()
                 .add(ChangeDenominator(newDenominator: itemCount));
 
-            return BlocSelector<QuizBloc, QuizState, bool>(
+            return BlocSelector<QuizBloc, QuizState, bool?>(
               selector: (state) {
                 /// RESPONSE ON RESULT TEST
                 if (state is QuizSuccess) {
                   return state.result;
                 }
-                return true;
+                return null;
               },
-              builder: (context, quizState) {
+              builder: (context, quizResult) {
                 return BlocBuilder<GridCubit, GridState>(
                   builder: (context, gridState) {
                     context.read<QuizBloc>().add(ChangeNominator(
@@ -60,8 +60,13 @@ class GridSquare extends StatelessWidget {
                             context.read<GridCubit>().toggleSelection(index);
                           },
                           child: Container(
-                            color: isSelected ? MyColor.blue1 : Colors.grey,
-                          ),
+                              color: quizResult == null
+                                  ? isSelected
+                                      ? MyColor.blue1
+                                      : Colors.grey
+                                  : quizResult
+                                      ? Colors.green
+                                      : Colors.red),
                         );
                       },
                     );

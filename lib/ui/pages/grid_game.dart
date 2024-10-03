@@ -1,5 +1,7 @@
 import 'package:challange_submission/core/bloc/game_prop/game_prop_cubit.dart';
 import 'package:challange_submission/core/bloc/game_prop/game_prop_state.dart';
+import 'package:challange_submission/core/bloc/quiz/quiz_bloc.dart';
+import 'package:challange_submission/core/bloc/quiz/quiz_state.dart';
 import 'package:challange_submission/core/model/question_model.dart';
 import 'package:challange_submission/core/theme/my_color.dart';
 import 'package:challange_submission/core/theme/text_styles.dart';
@@ -52,62 +54,87 @@ class _GridGameState extends State<GridGame> {
                   return state.question!;
                 },
                 builder: (context, question) {
-                  return Column(
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Text(
-                        '${question.nominator}',
-                        style: TextStyles.l.copyWith(color: Colors.white),
-                      ),
-                      SizedBox(
-                        width: 20.w,
-                        child: const Divider(
-                          thickness: 2,
-                        ),
-                      ),
-                      Text(
-                        '${question.denominator}',
-                        style: TextStyles.l.copyWith(color: Colors.white),
-                      ),
-                      const SizedBox(height: 10),
-                      Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
+                  return BlocSelector<QuizBloc, QuizState, bool?>(
+                    selector: (state) {
+                      /// RESPONSE ON RESULT TEST
+                      if (state is QuizSuccess) {
+                        return state.result;
+                      }
+                      return null;
+                    },
+                    builder: (context, quizResult) {
+                      return Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisSize: MainAxisSize.min,
                         children: [
-                          SizedBox(
-                              width: deviceProperties.width * 0.7,
-                              height: deviceProperties.width * 0.15,
-                              child: const CustomSlider(isAbsis: true)),
-                          Row(
-                            children: [
-                              SizedBox(
-                                width: deviceProperties.width * 0.15,
-                                height: deviceProperties.width * 0.7,
-                                child: const RotatedBox(
-                                    quarterTurns: 1,
-                                    child: CustomSlider(isAbsis: false)),
-                              ),
-                              GridSquare(
-                                  width: deviceProperties.width * 0.7,
-                                  height: deviceProperties.width * 0.7),
-                              SizedBox(
-                                width: deviceProperties.width * 0.15,
-                                height: deviceProperties.width * 0.7,
-                                child: const RotatedBox(
-                                    quarterTurns: 1,
-                                    child: CustomSlider(isAbsis: false)),
-                              ),
-                            ],
+                          Text(
+                            '${question.nominator}',
+                            style: TextStyles.l.copyWith(
+                                color: quizResult == null
+                                    ? Colors.white
+                                    : quizResult
+                                        ? Colors.green
+                                        : Colors.red),
                           ),
                           SizedBox(
-                              width: deviceProperties.width * 0.7,
-                              height: deviceProperties.width * 0.15,
-                              child: const CustomSlider(isAbsis: true))
+                            width: 20.w,
+                            child: Divider(
+                                thickness: 2,
+                                color: quizResult == null
+                                    ? Colors.white
+                                    : quizResult
+                                        ? Colors.green
+                                        : Colors.red),
+                          ),
+                          Text(
+                            '${question.denominator}',
+                            style: TextStyles.l.copyWith(
+                                color: quizResult == null
+                                    ? Colors.white
+                                    : quizResult
+                                        ? Colors.green
+                                        : Colors.red),
+                          ),
+                          const SizedBox(height: 10),
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              SizedBox(
+                                  width: deviceProperties.width * 0.7,
+                                  height: deviceProperties.width * 0.15,
+                                  child: const CustomSlider(isAbsis: true)),
+                              Row(
+                                children: [
+                                  SizedBox(
+                                    width: deviceProperties.width * 0.15,
+                                    height: deviceProperties.width * 0.7,
+                                    child: const RotatedBox(
+                                        quarterTurns: 1,
+                                        child: CustomSlider(isAbsis: false)),
+                                  ),
+                                  GridSquare(
+                                      width: deviceProperties.width * 0.7,
+                                      height: deviceProperties.width * 0.7),
+                                  SizedBox(
+                                    width: deviceProperties.width * 0.15,
+                                    height: deviceProperties.width * 0.7,
+                                    child: const RotatedBox(
+                                        quarterTurns: 1,
+                                        child: CustomSlider(isAbsis: false)),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(
+                                  width: deviceProperties.width * 0.7,
+                                  height: deviceProperties.width * 0.15,
+                                  child: const CustomSlider(isAbsis: true))
+                            ],
+                          ),
+                          const SizedBox(height: 30),
                         ],
-                      ),
-                      const SizedBox(height: 30),
-                    ],
+                      );
+                    },
                   );
                 },
               ),
