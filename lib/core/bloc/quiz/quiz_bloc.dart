@@ -4,9 +4,14 @@ import 'package:challange_submission/core/bloc/quiz/quiz_state.dart';
 
 class QuizBloc extends Bloc<QuizEvent, QuizState> {
   QuizBloc() : super(const QuizInitial()) {
+    on<Initial>(_onInitial);
     on<ChangeNominator>(_onChangeNominator);
     on<ChangeDenominator>(_onChangeDenominator);
     on<TestAnswer>(_onTestAnswer);
+  }
+
+  void _onInitial(Initial event, Emitter emit) {
+    emit(const QuizInitial());
   }
 
   void _onChangeNominator(ChangeNominator event, Emitter emit) {
@@ -22,7 +27,6 @@ class QuizBloc extends Bloc<QuizEvent, QuizState> {
   }
 
   void _onTestAnswer(TestAnswer event, Emitter emit) {
-    emit(QuizLoading());
     try {
       if (state is QuizInitial) {
         int nominator = (state as QuizInitial).nominator;

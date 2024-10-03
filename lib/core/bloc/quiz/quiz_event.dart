@@ -1,6 +1,8 @@
-import 'package:challange_submission/core/model/answer_model.dart';
+import 'package:challange_submission/core/model/question_model.dart';
 
 class QuizEvent {}
+
+class Initial extends QuizEvent {}
 
 class ChangeNominator extends QuizEvent {
   final int newNominator;
@@ -15,7 +17,7 @@ class ChangeDenominator extends QuizEvent {
 }
 
 class TestAnswer extends QuizEvent {
-  final AnswerModel rightAnswer;
+  final QuestionModel rightAnswer;
 
   TestAnswer({required this.rightAnswer});
 }

@@ -11,4 +11,8 @@ class SliderCubit extends Cubit<SliderState> {
   void changeOrdinat(int newVal) {
     emit(state.copyWith(ordinat: newVal));
   }
+
+  void initial() {
+    emit(const SliderState());
+  }
 }

@@ -1,16 +1,34 @@
+import 'package:challange_submission/core/bloc/game_prop/game_prop_cubit.dart';
+import 'package:challange_submission/core/bloc/game_prop/game_prop_state.dart';
+import 'package:challange_submission/core/model/question_model.dart';
 import 'package:challange_submission/core/theme/my_color.dart';
 import 'package:challange_submission/core/theme/text_styles.dart';
 import 'package:challange_submission/core/utility/device_properties.dart';
+import 'package:challange_submission/ui/widget/action_button.dart';
 import 'package:challange_submission/ui/widget/custom_slider.dart';
 import 'package:challange_submission/ui/widget/grid_square.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:challange_submission/ui/widget/nav_bar.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-class GridGame extends StatelessWidget {
+class GridGame extends StatefulWidget {
   const GridGame({super.key});
 
+  @override
+  State<GridGame> createState() => _GridGameState();
+}
+
+class _GridGameState extends State<GridGame> {
   get itemBuilder => null;
+
+  @override
+  void initState() {
+    context
+        .read<GamePropCubit>()
+        .startGame(questionCount: 5, refreshChance: 5, lifePointCount: 2);
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,147 +39,82 @@ class GridGame extends StatelessWidget {
         body: Stack(
           children: [
             /// NAVBAR
-            Align(
+            const Align(
               alignment: Alignment.topCenter,
-              child: Column(
-                children: [
-                  LinearProgressIndicator(
-                    minHeight: 50.h,
-                    value: 90,
-                    color: MyColor.blue1,
-                  ),
-                  Container(
-                    color: MyColor.dark900,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Row(
-                          children: [
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  CupertinoIcons.chevron_up,
-                                  color: Colors.white,
-                                  size: 35,
-                                )),
-                            IconButton(
-                                onPressed: () {},
-                                icon: const Icon(
-                                  CupertinoIcons.refresh,
-                                  color: Colors.white,
-                                  size: 35,
-                                )),
-                          ],
-                        ),
-                        const Row(
-                          children: [
-                            Icon(
-                              CupertinoIcons.star,
-                              color: Colors.red,
-                              size: 35,
-                            ),
-                            Icon(
-                              CupertinoIcons.star_fill,
-                              color: Colors.green,
-                              size: 35,
-                            ),
-                          ],
-                        ),
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(
-                              CupertinoIcons.chevron_right,
-                              color: Colors.green,
-                              size: 35,
-                            )),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
+              child: NavBar(),
             ),
 
             /// MAIN SECTION
             Container(
               margin: const EdgeInsets.only(top: 130),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    '1',
-                    style: TextStyles.l.copyWith(color: Colors.white),
-                  ),
-                  SizedBox(
-                    width: 20.w,
-                    child: const Divider(
-                      thickness: 2,
-                    ),
-                  ),
-                  Text(
-                    '2',
-                    style: TextStyles.l.copyWith(color: Colors.white),
-                  ),
-                  const SizedBox(height: 10),
-                  Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
+              child: BlocSelector<GamePropCubit, GamePropState, QuestionModel>(
+                selector: (state) {
+                  return state.question!;
+                },
+                builder: (context, question) {
+                  return Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
+                      Text(
+                        '${question.nominator}',
+                        style: TextStyles.l.copyWith(color: Colors.white),
+                      ),
                       SizedBox(
-                          width: deviceProperties.width * 0.7,
-                          height: deviceProperties.width * 0.15,
-                          child: const CustomSlider(isAbsis: true)),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        width: 20.w,
+                        child: const Divider(
+                          thickness: 2,
+                        ),
+                      ),
+                      Text(
+                        '${question.denominator}',
+                        style: TextStyles.l.copyWith(color: Colors.white),
+                      ),
+                      const SizedBox(height: 10),
+                      Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           SizedBox(
-                            width: deviceProperties.width * 0.15,
-                            height: deviceProperties.width * 0.7,
-                            child: const RotatedBox(
-                                quarterTurns: 1,
-                                child: CustomSlider(isAbsis: false)),
-                          ),
-                          GridSquare(
                               width: deviceProperties.width * 0.7,
-                              height: deviceProperties.width * 0.7),
-                          SizedBox(
-                            width: deviceProperties.width * 0.15,
-                            height: deviceProperties.width * 0.7,
-                            child: const RotatedBox(
-                                quarterTurns: 1,
-                                child: CustomSlider(isAbsis: false)),
+                              height: deviceProperties.width * 0.15,
+                              child: const CustomSlider(isAbsis: true)),
+                          Row(
+                            children: [
+                              SizedBox(
+                                width: deviceProperties.width * 0.15,
+                                height: deviceProperties.width * 0.7,
+                                child: const RotatedBox(
+                                    quarterTurns: 1,
+                                    child: CustomSlider(isAbsis: false)),
+                              ),
+                              GridSquare(
+                                  width: deviceProperties.width * 0.7,
+                                  height: deviceProperties.width * 0.7),
+                              SizedBox(
+                                width: deviceProperties.width * 0.15,
+                                height: deviceProperties.width * 0.7,
+                                child: const RotatedBox(
+                                    quarterTurns: 1,
+                                    child: CustomSlider(isAbsis: false)),
+                              ),
+                            ],
                           ),
+                          SizedBox(
+                              width: deviceProperties.width * 0.7,
+                              height: deviceProperties.width * 0.15,
+                              child: const CustomSlider(isAbsis: true))
                         ],
                       ),
-                      SizedBox(
-                          width: deviceProperties.width * 0.7,
-                          height: deviceProperties.width * 0.15,
-                          child: const CustomSlider(isAbsis: true))
+                      const SizedBox(height: 30),
                     ],
-                  ),
-                  const SizedBox(height: 30),
-                ],
+                  );
+                },
               ),
             ),
 
             /// ACTION BUTTON
-            Align(
-              alignment: const Alignment(0, 0.9),
-              child: SizedBox(
-                width: 250,
-                height: 50,
-                child: ElevatedButton(
-                    style: ButtonStyle(
-                      backgroundColor: WidgetStatePropertyAll(MyColor.dark800),
-                    ),
-                    onPressed: () {},
-                    child: Text(
-                      'Next',
-                      style: TextStyles.m.copyWith(color: Colors.white),
-                    )),
-              ),
-            )
+            const Align(alignment: Alignment(0, 0.9), child: ActionButton())
           ],
         ));
   }
