@@ -1,6 +1,7 @@
 import 'package:challange_submission/core/bloc/game_prop/game_prop_cubit.dart';
 import 'package:challange_submission/core/bloc/game_prop/game_prop_state.dart';
 import 'package:challange_submission/core/theme/my_color.dart';
+import 'package:challange_submission/core/utility/util_component.dart';
 import 'package:challange_submission/ui/widget/life_point.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -49,6 +50,8 @@ class NavBar extends StatelessWidget {
                         onPressed: refreshChance == 0
                             ? null
                             : () {
+                                UtilComponent.toastWarning(
+                                    'you have ${refreshChance - 1} more chance to refresh');
                                 context
                                     .read<GamePropCubit>()
                                     .decreaseState(decreaseRefreshChance: 1);
